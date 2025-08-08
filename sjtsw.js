@@ -1,6 +1,6 @@
-function SJTSW_GetBrowserLanguage()
+function SJTSW_GetBrowserLanguages()
 {
-	return navigator.language || navigator.userLanguage;
+	return navigator.languages || [navigator.language || navigator.userLanguage];
 }
 
 function SJTSW_UpdatePageContent(translations, language)
@@ -20,17 +20,20 @@ function SJTSW_UpdatePageContent(translations, language)
 
 function SJTSW_TranslatePage()
 {
-	var browserLanguage = SJTSW_GetBrowserLanguage().split('-')[0];
-	var languageInfoElement = document.createElement('p');
+	var browserLanguages = SJTSW_GetBrowserLanguages();
+	var foundLanguage = 'en';
 
-	if (translations[browserLanguage])
+	for (var i = 0; i < browserLanguages.length; i++)
 	{
-		SJTSW_UpdatePageContent(translations, browserLanguage);
+		var langCode = browserLanguages[i].split('-')[0];
+		if (translations[langCode])
+		{
+			foundLanguage = langCode;
+			break;
+		}
 	}
-	else
-	{
-		SJTSW_UpdatePageContent(translations, 'en');
-	}
+
+	SJTSW_UpdatePageContent(translations, foundLanguage);
 }
 
 // Call the initialization function
